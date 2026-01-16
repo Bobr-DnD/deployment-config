@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: ./backend/gateway-server
+      dockerfile: Dockerfile
+    container_name: gateway-server
+    ports:
+      - "3000:3000"
+    environment:
+      - API_SERVER_URL=http://localhost:3001
+      - WS_SERVER_URL=http://localhost:3002
+    depends_on:
+      - api
+      - ws
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./backend/api-server
+      dockerfile: Dockerfile
+    container_name: api-server
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGO_URL_WEB=${DATABASE_URL_WEB}
+      - DATABASE_URL_LOCAL=${DATABASE_URL_LOCAL}
+      - DB_LOCAL=true
+      - FIREBASE_UDL=${FIREBASE_URL}
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  ws:
+    build:
+      context: ./backend/ws-server
+      dockerfile: Dockerfile
+    container_name: ws-server
+    ports:
+      - "3002:3002"
+    environment:
+      - MONGO_URL_WEB=${DATABASE_URL_WEB}
+      - DATABASE_URL_LOCAL=${DATABASE_URL_LOCAL}
+      - DB_LOCAL=true
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend/vue-frontend
+      dockerfile: Dockerfile
+    container_name: vue-frontend
+    ports:
+      - "8080:80"
+    environment:
+      - VITE_API_URL=${VITE_API:http://localhost:3000}
+      - VITE_WS_URL=${VITE_WS:http://localhost:3000}
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge

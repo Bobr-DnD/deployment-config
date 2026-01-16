@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: ./backend/gateway-server
+      dockerfile: Dockerfile
+    container_name: gateway-server
+    ports:
+      - "3000:3000"
+    environment:
+      - API_SERVER_URL=http://localhost:3001
+      - WS_SERVER_URL=http://localhost:3002
+    depends_on:
+      - api
+      - ws
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./backend/api-server
+      dockerfile: Dockerfile
+    container_name: api-server
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGO_URL_WEB=${DATABASE_URL_WEB}
+      - DATABASE_URL_LOCAL=${DATABASE_URL_LOCAL}
+      - DB_LOCAL=true
+      - FIREBASE_UDL=${FIREBASE_URL}
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+  ws:
+    build:
+      context: ./backend/ws-server
+      dockerfile: Dockerfile
+    container_name: ws-server
+    ports:
+      - "3002:3002"
+    environment:
+      - MONGO_URL_WEB=${DATABASE_URL_WEB}
+      - DATABASE_URL_LOCAL=${DATABASE_URL_LOCAL}
+      - DB_LOCAL=true
+    networks:
+      - backend-network
+    restart: unless-stopped
+
+networks:
+  backend-network:
+    driver: bridge
