@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   gateway:
     build:
@@ -9,8 +7,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_SERVER_URL=http://localhost:3001
-      - WS_SERVER_URL=http://localhost:3002
+      - API_SERVER_URL=http://api:3001
+      - WS_SERVER_URL=http://ws:3002
     depends_on:
       - api
       - ws
@@ -20,15 +18,15 @@ services:
 
   api:
     build:
-      context: ./backend/api-server
+      context: ./backend/API-server
       dockerfile: Dockerfile
     container_name: api-server
     ports:
       - "3001:3001"
     environment:
-      - MONGO_URL_WEB=${DATABASE_URL_WEB}
-      - DATABASE_URL_LOCAL=${DATABASE_URL_LOCAL}
-      - DB_LOCAL=true
+      - MONGO_URL_WEB=${MONGO_URL_WEB}
+      - MONGO_URL_LOCAL=${MONGO_URL_LOCAL}
+      - DB_LOCAL=${DB_LOCAL}
       - FIREBASE_UDL=${FIREBASE_URL}
     networks:
       - app-network
@@ -36,15 +34,15 @@ services:
 
   ws:
     build:
-      context: ./backend/ws-server
+      context: ./backend/WS-server
       dockerfile: Dockerfile
     container_name: ws-server
     ports:
       - "3002:3002"
     environment:
-      - MONGO_URL_WEB=${DATABASE_URL_WEB}
-      - DATABASE_URL_LOCAL=${DATABASE_URL_LOCAL}
-      - DB_LOCAL=true
+      - MONGO_URL_WEB=${MONGO_URL_WEB}
+      - MONGO_URL_LOCAL=${MONGO_URL_LOCAL}
+      - DB_LOCAL=${DB_LOCAL}
     networks:
       - app-network
     restart: unless-stopped
