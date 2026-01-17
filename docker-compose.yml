@@ -49,14 +49,14 @@ services:
 
   frontend:
     build:
-      context: ./frontend/vue-frontend
+      context: ./frontend/vueFrontEndService
       dockerfile: Dockerfile
     container_name: vue-frontend
     ports:
       - "8080:80"
     environment:
-      - VITE_API_URL=${VITE_API:http://localhost:3000}
-      - VITE_WS_URL=${VITE_WS:http://localhost:3000}
+      - VITE_API=http://gateway:3000/api
+      - VITE_WS=http://gateway:3000
     networks:
       - app-network
     restart: unless-stopped
