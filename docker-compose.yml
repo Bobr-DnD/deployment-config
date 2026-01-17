@@ -55,8 +55,10 @@ services:
     ports:
       - "8080:80"
     environment:
-      - VITE_API=http://gateway:3000/api
-      - VITE_WS=http://gateway:3000
+      - VITE_API=${VITE_API:-http://gateway:3000/api}
+      - VITE_WS=${VITE_WS:-http://gateway:3000}
+    depends_on:
+    - gateway
     networks:
       - app-network
     restart: unless-stopped
