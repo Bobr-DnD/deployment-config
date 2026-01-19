@@ -9,6 +9,7 @@ services:
     environment:
       - API_SERVER_URL=http://api:3001
       - WS_SERVER_URL=http://ws:3002
+      - GATEWAY_PORT=3000
     depends_on:
       - api
       - ws
@@ -27,7 +28,8 @@ services:
       - MONGO_URL_WEB=${MONGO_URL_WEB}
       - MONGO_URL_LOCAL=${MONGO_URL_LOCAL}
       - DB_LOCAL=${DB_LOCAL}
-      - FIREBASE_UDL=${FIREBASE_URL}
+      - FIREBASE_URL=${FIREBASE_URL}
+      - API_PORT=3001
     networks:
       - backend-network
     restart: unless-stopped
@@ -43,6 +45,7 @@ services:
       - MONGO_URL_WEB=${MONGO_URL_WEB}
       - MONGO_URL_LOCAL=${MONGO_URL_LOCAL}
       - DB_LOCAL=${DB_LOCAL}
+      - PORT=3002
     networks:
       - backend-network
     restart: unless-stopped
