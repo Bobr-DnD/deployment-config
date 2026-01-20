@@ -10,6 +10,7 @@ services:
       - API_SERVER_URL=http://api:3001
       - WS_SERVER_URL=http://ws:3002
       - GATEWAY_PORT=3000
+      - CORS_ORIGIN=${CORS_ORIGIN}
     depends_on:
       - api
       - ws
@@ -30,6 +31,7 @@ services:
       - DB_LOCAL=${DB_LOCAL}
       - FIREBASE_URL=${FIREBASE_URL}
       - API_PORT=3001
+      - CORS_ORIGIN_API=${CORS_ORIGIN_API}
     networks:
       - app-network
     restart: unless-stopped
@@ -46,6 +48,7 @@ services:
       - MONGO_URL_LOCAL=${MONGO_URL_LOCAL}
       - DB_LOCAL=${DB_LOCAL}
       - PORT=3002
+      - CORS_ORIGIN_WS=${CORS_ORIGIN_WS}
     networks:
       - app-network
     restart: unless-stopped
