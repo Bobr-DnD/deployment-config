@@ -5,5 +5,5 @@ output "instance_hostname" {
 
 output "public_ip" {
   description = "Public instance ip"
-  value = aws_instance.backend-server.public_ip
+  value       = aws_instance.backend-server.public_ip
 }

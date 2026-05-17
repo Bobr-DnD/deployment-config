@@ -37,18 +37,21 @@ module "default-vpc" {
   azs             = var.zones
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
   public_subnets  = ["10.0.101.0/24"]
-  
+
+  enable_nat_gateway      = true
   map_public_ip_on_launch = true
-  enable_dns_hostnames = true
+  enable_dns_hostnames    = true
 }
 
 module "security-group-backend" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~>4.5.0"
-  
-  name = "backend"
+
+  name   = "backend"
   vpc_id = module.default-vpc.vpc_id
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules = ["http-80-tcp", "https-443-tcp", "ssh-tcp"]
+  ingress_rules       = ["http-80-tcp", "https-443-tcp", "ssh-tcp"]
+  egress_cidr_blocks  = ["0.0.0.0/0"]
+  egress_rules        = ["all-all"]
 }
