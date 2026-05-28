@@ -1,0 +1,4 @@
+node_version: "22"
+nvm_version: "0.39.0"
+node_user: ubuntu
+node_home: "/home/ubuntu"

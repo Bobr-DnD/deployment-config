@@ -1,0 +1,88 @@
+- name: Install Nginx and Certbot
+  apt:
+    name:
+      - nginx
+      - certbot
+      - python3-certbot-nginx
+    state: present
+    update_cache: yes
+
+- name: Create webroot for ACME challenge
+  file:
+    path: /var/www/certbot
+    state: directory
+    owner: "{{ nginx_user }}"
+    mode: "0755"
+
+- name: Write initial HTTP config (needed for challenge)
+  template:
+    src: nginx-http.conf.j2
+    dest: /etc/nginx/sites-available/backend
+  notify: reload nginx
+
+- name: Enable site
+  file:
+    src: /etc/nginx/sites-available/backend
+    dest: /etc/nginx/sites-enabled/backend
+    state: link
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: reload nginx
+
+- name: Ensure Nginx is running before cert request
+  service:
+    name: nginx
+    state: started
+
+- name: Flush handlers now (reload nginx before certbot)
+  meta: flush_handlers
+
+- name: Check if cert already exists
+  stat:
+    path: "/etc/letsencrypt/live/{{ nginx_domain }}/fullchain.pem"
+  register: cert_stat
+
+- name: Obtain Let's Encrypt certificate
+  command: >
+    certbot certonly
+    --webroot
+    --webroot-path /var/www/certbot
+    --email {{ ssl_email }}
+    --agree-tos
+    --no-eff-email
+    --domains {{ nginx_domain }}
+  when:
+    - not cert_stat.stat.exists
+    - ssl_email != ""
+    - nginx_domain | length > 0
+
+- name: Write HTTPS Nginx config
+  template:
+    src: nginx-https.conf.j2
+    dest: /etc/nginx/sites-available/app
+  when: cert_stat.stat.exists or not cert_stat.stat.exists
+  notify: reload nginx
+
+- name: Set ssl_enabled fact after cert obtained
+  set_fact:
+    ssl_enabled: true
+  when: cert_stat.stat.exists
+
+- name: Re-render configs with ssl_enabled=true
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: nginx-http.conf.j2,  dest: /etc/nginx/sites-available/app-http }
+    - { src: nginx-https.conf.j2, dest: /etc/nginx/sites-available/app }
+  when: ssl_enabled
+  notify: reload nginx
+
+- name: Enable Certbot auto-renewal timer
+  systemd:
+    name: certbot.timer
+    enabled: yes
+    state: started

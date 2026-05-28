@@ -1,0 +1,22 @@
+- name: Install NVM dependencies
+  apt:
+    name: [curl, git, build-essential]
+    state: present
+    update_cache: yes
+
+- name: Download and install NVM
+  become_user: "{{ node_user }}"
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v{{ nvm_version }}/install.sh | bash
+  args:
+    creates: "{{ node_home }}/.nvm/nvm.sh"
+
+- name: Install Node {{ node_version }}
+  become_user: "{{ node_user }}"
+  shell: |
+    source {{ node_home }}/.nvm/nvm.sh
+    nvm install {{ node_version }}
+    nvm alias default {{ node_version }}
+  args:
+    executable: /bin/bash
+    creates: "{{ node_home }}/.nvm/versions/node/v{{ node_version }}"

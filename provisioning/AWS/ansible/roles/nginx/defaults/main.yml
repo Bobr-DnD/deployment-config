@@ -1,0 +1,6 @@
+nginx_domain: "api.example.com"
+nginx_upstream_port: 3000
+ssl_enabled: false
+ssl_email: "ops@company.com"
+nginx_user: www-data
+proxy_timeout: "1d"

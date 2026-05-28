@@ -1,0 +1,14 @@
+- name: Deploy Fastify backend
+  hosts: backend
+  become: true
+
+  roles:
+    - role: roles/backend
+    - role: roles/nginx
+
+  post_tasks:
+    - name: Verify app is responding
+      uri:
+        url: "http://localhost:{{ app_port }}/"
+        status_code: 404
+      retries: 5

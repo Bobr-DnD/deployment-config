@@ -1,0 +1,2 @@
+nvm_sh: "/home/{{ app_user }}/.nvm/nvm.sh"
+node_bin: "/home/{{ app_user }}/.nvm/versions/node/v{{ node_version }}/bin"

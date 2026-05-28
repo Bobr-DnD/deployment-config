@@ -1,0 +1,7 @@
+app_user: ubuntu
+app_dir: /opt/backend
+app_repo: "git@github.com/user-name/repo"
+app_branch: main
+app_port: 3000
+app_env: production
+node_version: "22"

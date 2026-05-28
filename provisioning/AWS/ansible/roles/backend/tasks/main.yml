@@ -1,0 +1,85 @@
+- name: Install Docker dependencies
+  apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+    update_cache: yes
+
+- name: Add Docker GPG key
+  shell: |
+    install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+      | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  args:
+    creates: /etc/apt/keyrings/docker.gpg
+
+- name: Add Docker apt repository
+  shell: |
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+      https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+      | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  args:
+    creates: /etc/apt/sources.list.d/docker.list
+
+- name: Install Docker and Compose plugin
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+    update_cache: yes
+
+- name: Add app user to docker group
+  user:
+    name: "{{ app_user }}"
+    groups: docker
+    append: yes
+
+- name: Create app directory
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    mode: "0755"
+
+- name: Clone or update repository
+  become_user: "{{ app_user }}"
+  git:
+    repo: "{{ app_repo }}"
+    dest: "{{ app_dir }}"
+    version: "{{ app_branch }}"
+    force: yes
+
+- name: Write .env file from template
+  template:
+    src: env.j2
+    dest: "{{ app_dir }}/.env"
+    owner: "{{ app_user }}"
+    mode: "0600"
+
+- name: Pull latest images
+  become_user: "{{ app_user }}"
+  command:
+    cmd: docker compose pull
+    chdir: "{{ app_dir }}"
+
+- name: Start services with Docker Compose
+  become_user: "{{ app_user }}"
+  command:
+    cmd: docker-compose -f docker-compose.backend.yml up -d --remove-orphans
+    chdir: "{{ app_dir }}"
+
+- name: Wait for app to be ready
+  uri:
+    url: "http://127.0.0.1:{{ app_port }}/"
+    status_code: 404
+  register: health
+  retries: 10
+  delay: 3
+  until: health.status == 404

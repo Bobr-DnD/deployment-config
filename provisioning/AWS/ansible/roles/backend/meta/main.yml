@@ -1,0 +1,5 @@
+dependencies:
+  - role: node
+    vars:
+      node_version: "22"
+      
