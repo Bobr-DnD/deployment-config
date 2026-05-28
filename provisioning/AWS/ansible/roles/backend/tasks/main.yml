@@ -72,7 +72,7 @@
 - name: Start services with Docker Compose
   become_user: "{{ app_user }}"
   command:
-    cmd: docker-compose -f docker-compose.backend.yml up -d --remove-orphans
+    cmd: docker compose -f docker-compose.backend.yml up -d --remove-orphans
     chdir: "{{ app_dir }}"
 
 - name: Wait for app to be ready
