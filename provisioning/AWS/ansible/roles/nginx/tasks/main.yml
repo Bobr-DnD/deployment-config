@@ -62,7 +62,7 @@
 - name: Write HTTPS Nginx config
   template:
     src: nginx-https.conf.j2
-    dest: /etc/nginx/sites-available/app
+    dest: /etc/nginx/sites-available/backend
   when: cert_stat.stat.exists or not cert_stat.stat.exists
   notify: reload nginx
 
@@ -76,8 +76,8 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   loop:
-    - { src: nginx-http.conf.j2,  dest: /etc/nginx/sites-available/app-http }
-    - { src: nginx-https.conf.j2, dest: /etc/nginx/sites-available/app }
+    - { src: nginx-http.conf.j2,  dest: /etc/nginx/sites-available/backend-http }
+    - { src: nginx-https.conf.j2, dest: /etc/nginx/sites-available/backend }
   when: ssl_enabled
   notify: reload nginx
 

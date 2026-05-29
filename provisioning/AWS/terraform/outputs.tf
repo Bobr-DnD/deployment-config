@@ -10,5 +10,12 @@ output "public_ip" {
 
 output "public_dns" {
   description = "FQDN"
-  value = aws_instance.backend-server.public_dns
+  value       = aws_instance.backend-server.public_dns
+}
+
+resource "local_file" "ansible_inventory" {
+  content = templatefile("templates/hosts.tpl", {
+    instance_ip = aws_instance.backend-server.public_ip
+  })
+  filename = "../ansible/inventory/hosts.yml"
 }
