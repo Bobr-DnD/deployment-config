@@ -1,6 +1,6 @@
 app_repo: "https://github.com/Bobr-DnD/deployment-config"
 app_branch: "main"
 app_port: 3000
-nginx_domain: "webapptesting.ddns.net"
+nginx_domain: "testingapps.ddns.net"
 ssl_email: "vlad0021135@gmail.com"
 nginx_upstream_port: 3000
