@@ -63,6 +63,14 @@
     owner: "{{ app_user }}"
     mode: "0600"
 
+- name: Copy firebase config
+  copy:
+    src: group_vars/firebase-admin.json
+    dest: /opt/backend/backend/API-server/firebase-admin.json
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: "0644"
+
 - name: Pull latest images
   become_user: "{{ app_user }}"
   command:

@@ -1,2 +1,3 @@
 *.pem
 vault.yml
+firebase-admin.json
