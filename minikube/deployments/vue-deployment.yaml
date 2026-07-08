@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vue
+  name: vue-deployment
   namespace: dnd
   labels:
-    name: vue
+    app: vue
 spec:
   replicas: 1
   selector:
@@ -46,7 +46,7 @@ metadata:
   name: vue-service
   namespace: dnd
   labels:
-    name: vue
+    app: vue
 spec:
   selector:
     app: vue

@@ -4,7 +4,7 @@ metadata:
   name: ws-deployment
   namespace: dnd
   labels:
-    name: ws
+    app: ws
 spec:
   replicas: 2
   selector:
@@ -55,6 +55,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ws-service
+  namespace: dnd
+  labels:
+    app: ws
 spec:
   selector:
     app: ws

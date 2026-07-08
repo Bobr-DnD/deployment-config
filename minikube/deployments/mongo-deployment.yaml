@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mongo-deployment
   namespace: dnd
   labels:
     app: mongo
 spec:
+  serviceName: mongo
   replicas: 1
   selector:
     matchLabels:
@@ -25,6 +26,9 @@ spec:
           limits:
             memory: "1024Mi"
             cpu: "500m"
+        volumeMounts:
+          - name: mongo-data
+            mountPath: /data/db
         ports:
         - containerPort: 27017
         env:
@@ -38,15 +42,29 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: mongo-password
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mongo-service
+  namespace: dnd
+  labels:
+    app: mongo
 spec:
+  clusterIP: None
   selector:
     app: mongo
   ports:
-  - protocol: TCP
+  - name: mongo
+    protocol: TCP
     port: 27017
     targetPort: 27017
