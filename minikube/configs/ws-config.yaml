@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ws-config
+  namespace: dnd
+  labels: 
+    name: ws
+data:
+  ws-url: 'http://ws-service:3002'
+  ws-port: '3002'

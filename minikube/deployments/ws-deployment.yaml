@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws-deployment
+  namespace: dnd
+  labels:
+    name: ws
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ws
+  template:
+    metadata:
+      labels:
+        app: ws
+    spec:
+      containers:
+      - name: ws-pod
+        image: ws:1.0.0
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "256m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3002
+        env:
+        - name: DB_LOCAL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: db-local
+        - name: MONGO_URL_LOCAL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: mongo-url-local
+        - name: CORS_ORIGIN_API
+          valueFrom:
+            configMapKeyRef:
+              name: gateway-config
+              key: gateway-url
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: ws-config
+              key: ws-port
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ws-service
+spec:
+  selector:
+    app: ws
+  ports:
+  - port: 3002
+    targetPort: 3002
+

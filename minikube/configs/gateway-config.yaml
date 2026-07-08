@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-config
+  namespace: dnd
+  labels:
+    name: gateway
+data:
+  gateway-url: 'http://gateway-service:3000'
+  cors: '[http://127.0.0.1:80,http://vue-service:80,http://192.168.49.2:30080]'
+  gateway-port: '3000'

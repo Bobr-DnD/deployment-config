@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vue-config
+  namespace: dnd
+  labels: 
+    name: vue
+data:
+  ws-url: 'http://gateway-service:3000'
+  api-url: 'http://gateway-service:3000/api'

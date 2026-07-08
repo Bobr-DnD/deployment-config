@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-config
+  namespace: dnd
+  labels:
+    name: mongo
+data:
+  mongo-url: mongodb://mongo-service:27017
