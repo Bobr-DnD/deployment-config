@@ -8,6 +8,9 @@ fi
 
 kubectl apply -f secrets/backend-secret.yaml
 
+kubectl 
+kubectl apply -f ingress/ingress.yaml
+
 kubectl apply -f configs/api-config.yaml
 kubectl apply -f configs/ws-config.yaml
 kubectl apply -f configs/gateway-config.yaml
