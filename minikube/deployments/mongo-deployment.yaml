@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongo-deployment
+  name: mongo
   namespace: dnd
   labels:
     app: mongo
