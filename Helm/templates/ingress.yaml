@@ -1,0 +1,36 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $releaseName }}-ingress
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $releaseName }}-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.app.hostname }}
+    http:
+      paths:
+      - pathType: Prefix
+        path: /api
+        backend:
+          service:
+            name: {{ $releaseName }}-gateway-service
+            port:
+              number: {{ .Values.backend.gateway.port }}
+      - pathType: Prefix
+        path: /socket.io
+        backend:
+          service:
+            name: {{ $releaseName }}-gateway-service
+            port:
+              number: {{ .Values.backend.gateway.port }}
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: {{ $releaseName }}-vue-service
+            port:
+              number: {{ .Values.frontend.port }}

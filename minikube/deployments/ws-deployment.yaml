@@ -39,7 +39,7 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: mongo-url-local
-        - name: CORS_ORIGIN_API
+        - name: CORS_ORIGIN_WS
           valueFrom:
             configMapKeyRef:
               name: gateway-config

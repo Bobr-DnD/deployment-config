@@ -1,0 +1,55 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $releaseName }}-mongo-deployment
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app: {{ $releaseName }}-mongo
+spec:
+  serviceName: {{ $releaseName }}-mongo-service-headless
+  replicas: {{ .Values.mongo.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $releaseName }}-mongo
+  template:
+    metadata:
+      labels:
+        app: {{ $releaseName }}-mongo
+    spec:
+      containers:
+      - name: {{ $releaseName }}-mongo-pod
+        image: "{{ .Values.mongo.repo }}:{{ .Values.mongo.tag }}"
+        resources:
+          requests:
+            memory: {{ .Values.mongo.resources.requests.memory | quote }}
+            cpu: {{ .Values.mongo.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.mongo.resources.limits.memory | quote }}
+            cpu: {{ .Values.mongo.resources.limits.cpu | quote }}
+        volumeMounts:
+          - name: mongo-data
+            mountPath: /data/db
+        ports:
+        - containerPort: {{ .Values.mongo.port }}
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ $releaseName }}-mongo-config
+              key: mongo-user
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: {{ $releaseName }}-mongo-config
+              key: mongo-password
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.mongo.storage }}

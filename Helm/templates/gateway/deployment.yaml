@@ -1,0 +1,47 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $releaseName }}-gateway-deployment
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app: {{ $releaseName }}-gateway
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $releaseName }}-gateway
+  template:
+    metadata:
+      labels:
+        app: {{ $releaseName }}-gateway
+    spec:
+      containers:
+      - name: {{ $releaseName }}-gateway-pod
+        image: "{{ .Values.backend.gateway.repo }}:{{ .Values.backend.gateway.tag }}"
+        imagePullPolicy: {{ .Values.backend.imagePullPolicy }}
+        resources:
+          requests:
+            memory: {{ .Values.backend.resources.requests.memory | quote }}
+            cpu: {{ .Values.backend.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.backend.resources.limits.memory | quote }}
+            cpu: {{ .Values.backend.resources.limits.cpu | quote }}
+        ports:
+        - containerPort: {{ .Values.backend.gateway.port }}
+        env:
+        - name: API_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ $releaseName }}-api-config
+              key: api-url
+        - name: WS_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ $releaseName }}-ws-config
+              key: ws-url
+        - name: CORS_ORIGIN
+          value: {{ .Values.backend.cors | quote}}
+        - name: GATEWAY_PORT
+          value: {{ .Values.backend.gateway.port | quote}}

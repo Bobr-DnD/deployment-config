@@ -1,0 +1,15 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $releaseName }}-mongo-config
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    name: {{ $releaseName }}-mongo
+data:
+  mongo-url: 'mongodb://mongouser:mongopassword@{{ $releaseName }}-mongo-service:{{ .Values.mongo.port}}'
+  mongo-user: 'mongouser'
+  mongo-password: 'mongopassword'
+  local: 'true'
+  firebase-url: 'dndservice-881ca.firebasestorage.app'

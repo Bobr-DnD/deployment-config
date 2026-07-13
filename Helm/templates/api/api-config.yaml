@@ -1,0 +1,11 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $releaseName }}-api-config
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    name: {{ $releaseName }}-api
+data:
+  api-url: 'http://{{ $releaseName }}-api-service:{{ .Values.backend.api.port}}'

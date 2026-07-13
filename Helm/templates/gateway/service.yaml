@@ -1,0 +1,15 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $releaseName }}-gateway-service
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app: {{ $releaseName }}-gateway
+spec:
+  selector:
+    app: {{ $releaseName }}-gateway
+  ports:
+  - port: {{ .Values.backend.gateway.port }}
+    targetPort: {{ .Values.backend.gateway.port }}

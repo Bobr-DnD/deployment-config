@@ -1,0 +1,15 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $releaseName }}-ws-service
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app: {{ $releaseName }}-ws
+spec:
+  selector:
+    app: {{ $releaseName }}-ws
+  ports:
+  - port: {{ .Values.backend.ws.port }}
+    targetPort: {{ .Values.backend.ws.port }}

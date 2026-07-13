@@ -1,0 +1,7 @@
+apiVersion: v2
+version: 1.0.0
+name: dnd
+type: application
+description: microservice for dnd
+appVersion: 1.0.0
+home: https://github.com/Bobr-DnD/deployment-config

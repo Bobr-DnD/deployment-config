@@ -1,0 +1,11 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $releaseName }}-gateway-config
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    name: {{ $releaseName }}-gateway
+data:
+  gateway-url: 'http://{{ $releaseName }}-gateway-service:{{ .Values.backend.gateway.port}}'

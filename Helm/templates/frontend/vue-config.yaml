@@ -1,0 +1,9 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $releaseName }}-vue-config
+  namespace: {{ .Values.app.namespace }}
+data:
+  vue-url: 'http://{{ $releaseName }}-vue-service:{{ .Values.frontend.port }}'

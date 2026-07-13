@@ -1,0 +1,43 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $releaseName }}-vue-deployment
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app: {{ $releaseName }}-vue
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $releaseName }}-vue
+  template:
+    metadata:
+      labels:
+        app: {{ $releaseName }}-vue
+    spec:
+      containers:
+      - name: {{ $releaseName }}-vue-pod
+        image: "{{ .Values.frontend.repo }}:{{ .Values.frontend.tag }}"
+        imagePullPolicy: {{ .Values.frontend.imagePullPolicy }}
+        resources:
+          requests:
+            memory: {{ .Values.frontend.resources.requests.memory | quote }}
+            cpu: {{ .Values.frontend.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.frontend.resources.limits.memory | quote }}
+            cpu: {{ .Values.frontend.resources.limits.cpu | quote }}
+        ports:
+        - containerPort: {{ .Values.frontend.port }}
+        env:
+        - name: VITE_API
+          valueFrom:
+            configMapKeyRef:
+              name: {{ $releaseName }}-api-config
+              key: api-url
+        - name: VITE_WS
+          valueFrom:
+            configMapKeyRef:
+              name: {{ $releaseName }}-ws-config
+              key: ws-url

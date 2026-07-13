@@ -1,0 +1,15 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $releaseName }}-vue-service
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app: {{ $releaseName }}-vue
+spec:
+  selector:
+    app: {{ $releaseName }}-vue
+  ports:
+  - port: {{ .Values.frontend.port }}
+    targetPort: {{ .Values.frontend.port }}

@@ -1,0 +1,17 @@
+{{- $releaseName := .Release.Name -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $releaseName }}-mongo-service-headless
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    app: {{ $releaseName }}-mongo
+spec:
+  clusterIP: None
+  selector:
+    app: {{ $releaseName }}-mongo
+  ports:
+  - protocol: TCP
+    port: {{ .Values.mongo.port }}
+    targetPort: {{ .Values.mongo.port }}
