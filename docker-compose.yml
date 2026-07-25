@@ -5,11 +5,11 @@ services:
       dockerfile: Dockerfile
     container_name: gateway-server
     ports:
-      - "3000:3000"
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
     environment:
-      - API_SERVER_URL=http://api:3001
-      - WS_SERVER_URL=http://ws:3002
-      - GATEWAY_PORT=3000
+      - API_SERVER_URL=http://api:${API_PORT}
+      - WS_SERVER_URL=http://ws:${WS_PORT}
+      - GATEWAY_PORT=${GATEWAY_PORT}
       - CORS_ORIGIN=${CORS_ORIGIN}
     depends_on:
       - api
@@ -24,13 +24,13 @@ services:
       dockerfile: Dockerfile
     container_name: api-server
     ports:
-      - "3001:3001"
+      - "${API_PORT}:${API_PORT}"
     environment:
       - MONGO_URL_WEB=${MONGO_URL_WEB}
       - MONGO_URL_LOCAL=${MONGO_URL_LOCAL}
       - DB_LOCAL=${DB_LOCAL}
       - FIREBASE_URL=${FIREBASE_URL}
-      - API_PORT=3001
+      - API_PORT=${API_PORT}
       - CORS_ORIGIN_API=${CORS_ORIGIN_API}
     networks:
       - app-network
@@ -42,12 +42,12 @@ services:
       dockerfile: Dockerfile
     container_name: ws-server
     ports:
-      - "3002:3002"
+      - "${WS_PORT}:${WS_PORT}"
     environment:
       - MONGO_URL_WEB=${MONGO_URL_WEB}
       - MONGO_URL_LOCAL=${MONGO_URL_LOCAL}
       - DB_LOCAL=${DB_LOCAL}
-      - PORT=3002
+      - PORT=${WS_PORT}
       - CORS_ORIGIN_WS=${CORS_ORIGIN_WS}
     networks:
       - app-network
@@ -61,8 +61,8 @@ services:
     ports:
       - "8080:80"
     environment:
-      - VITE_API=${VITE_API:-http://gateway:3000/api}
-      - VITE_WS=${VITE_WS:-http://gateway:3000}
+      - VITE_API=${VITE_API:-http://gateway:{GATEWAY_PORT}/api}
+      - VITE_WS=${VITE_WS:-http://gateway:{GATEWAY_PORT}}
     depends_on:
     - gateway
     networks:
