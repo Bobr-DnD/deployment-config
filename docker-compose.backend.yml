@@ -47,7 +47,7 @@ services:
       - MONGO_URL_WEB=${MONGO_URL_WEB}
       - MONGO_URL_LOCAL=${MONGO_URL_LOCAL}
       - DB_LOCAL=${DB_LOCAL}
-      - PORT=${WS_PORT}
+      - WS_PORT=${WS_PORT}
       - CORS_ORIGIN_WS=${CORS_ORIGIN_WS}
     networks:
       - backend-network
