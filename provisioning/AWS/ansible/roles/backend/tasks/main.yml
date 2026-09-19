@@ -71,12 +71,6 @@
     group: "{{ app_user }}"
     mode: "0644"
 
-- name: Pull latest images
-  become_user: "{{ app_user }}"
-  command:
-    cmd: docker compose pull
-    chdir: "{{ app_dir }}"
-
 - name: Start services with Docker Compose
   become_user: "{{ app_user }}"
   command:

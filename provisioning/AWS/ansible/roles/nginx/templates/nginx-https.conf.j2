@@ -8,8 +8,6 @@ server {
 
     ssl_certificate     /etc/letsencrypt/live/{{ nginx_domain }}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/{{ nginx_domain }}/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
         proxy_pass http://127.0.0.1:{{ nginx_upstream_port }};
