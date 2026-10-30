@@ -11,6 +11,10 @@ services:
       - WS_SERVER_URL=http://ws:${WS_PORT}
       - GATEWAY_PORT=${GATEWAY_PORT}
       - CORS_ORIGIN=${CORS_ORIGIN}
+      - RATE_LIMIT_MAX=${RATE_LIMIT_MAX}
+      - RATE_LIMIT_WINDOW_SECONDS=${RATE_LIMIT_WINDOW_SECONDS}
+      - RATE_LIMIT_BAN=${RATE_LIMIT_BAN}
+      - RATE_LIMIT_ALLOWLIST=${RATE_LIMIT_ALLOWLIST}
     depends_on:
       - api
       - ws
@@ -32,6 +36,8 @@ services:
       - FIREBASE_URL=${FIREBASE_URL}
       - API_PORT=${API_PORT}
       - CORS_ORIGIN_API=${CORS_ORIGIN_API}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
     networks:
       - app-network
     restart: unless-stopped
@@ -49,6 +55,7 @@ services:
       - DB_LOCAL=${DB_LOCAL}
       - WS_PORT=${WS_PORT}
       - CORS_ORIGIN_WS=${CORS_ORIGIN_WS}
+      - JWT_SECRET=${JWT_SECRET}
     networks:
       - app-network
     restart: unless-stopped
@@ -57,12 +64,12 @@ services:
     build:
       context: ./frontend/vueFrontEndService
       dockerfile: Dockerfile
+      args:
+        VITE_API: ${VITE_API:-http://gateway:${GATEWAY_PORT}/api}
+        VITE_WS: ${VITE_WS:-http://gateway:${GATEWAY_PORT}}
     container_name: vue-frontend
     ports:
       - "8080:80"
-    environment:
-      - VITE_API=${VITE_API:-http://gateway:{GATEWAY_PORT}/api}
-      - VITE_WS=${VITE_WS:-http://gateway:{GATEWAY_PORT}}
     depends_on:
     - gateway
     networks:

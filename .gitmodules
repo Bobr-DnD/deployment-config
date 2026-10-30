@@ -4,9 +4,12 @@
 [submodule "backend/API-server"]
 	path = backend/API-server
 	url = https://github.com/Bobr-DnD/API-server.git
+	branch = dev
 [submodule "backend/WS-server"]
 	path = backend/WS-server
 	url = https://github.com/Bobr-DnD/WS-server.git
+	branch = dev
 [submodule "frontend/vueFrontEndService"]
 	path = frontend/vueFrontEndService
 	url = https://github.com/Bobr-DnD/vueFtontEndService.git
+	branch = dev
