@@ -65,8 +65,8 @@ services:
       context: ./frontend/vueFrontEndService
       dockerfile: Dockerfile
       args:
-        VITE_API: ${VITE_API:-http://gateway:${GATEWAY_PORT}/api}
-        VITE_WS: ${VITE_WS:-http://gateway:${GATEWAY_PORT}}
+        VITE_API: ${VITE_API}
+        VITE_WS: ${VITE_WS}
     container_name: vue-frontend
     ports:
       - "8080:80"
