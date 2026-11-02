@@ -3,10 +3,10 @@ services:
     build:
       context: ./frontend/vueFrontEndService
       dockerfile: Dockerfile
+      args:
+        VITE_API: ${VITE_API:-http://gateway:${GATEWAY_PORT}/api}
+        VITE_WS: ${VITE_WS:-http://gateway:${GATEWAY_PORT}}
     container_name: vue-frontend
     ports:
       - "8080:80"
-    environment:
-      - VITE_API=${VITE_API:-http://gateway:{GATEWAY_PORT}/api}
-      - VITE_WS=${VITE_WS:-http://gateway:{GATEWAY_PORT}}
     restart: unless-stopped
